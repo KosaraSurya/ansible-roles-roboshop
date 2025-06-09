@@ -1,0 +1,85 @@
+  - name: installing maven and mysql
+    ansible.builtin.dnf:
+      name: "{{ item }}"
+      state: installed
+    loop:
+    - maven
+    - mysql
+
+  - name: installing PyMySQL and cryptography
+    ansible.builtin.pip:
+      name: "{{ item }}"
+      executable: pip3.9  #pip3 used to install python dependecies( for ansible because ansible developed in the basis of python)
+    loop:
+    - PyMySQL # PyMySQLn is used to connect mysql clinet
+    - cryptography # cryptography used to password configuration
+
+  - name: creating the directory
+    ansible.builtin.file:
+      name: app
+      state: directory
+
+
+  - name: creating user
+    ansible.builtin.user:
+      name: roboshop
+      shell: /sbin/nologin
+      system: true
+      home: /app
+
+  - name: downloading the servie code
+    ansible.builtin.get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
+      dest: /tmp/shipping.zip
+
+  - name: extracting the servie
+    ansible.builtin.unarchive:
+      src: /tmp/shipping.zip
+      dest: /app
+      remote_src: yes
+
+  - name: installing maven dependencies
+    ansible.builtin.command: mvn clean package
+    args:
+      chdir: /app #it will install the maven dependecies in app directory and it will come-out of the directory
+
+  - name: Rename the jar file
+    ansible.builtin.command:  mv target/shipping-1.0.jar shipping.jar
+    args:
+      chdir: /app
+
+  - name: copying the system servie
+    ansible.builtin.copy:
+      src: shipping.service
+      dest: /etc/systemd/system/shipping.service
+
+  - name: Taking daemon-reload
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+    
+  - name: starting and enabling the servie
+    ansible.builtin.service:
+      name: shipping
+      state: started
+      enabled: yes
+
+
+  - name: import data
+    tags: # tags are used to run particualr block of code, while running the script in ansible server we have to give -t tagName
+    - import
+    community.mysql.mysql_db:
+      name: all
+      login_user: root
+      login_password: RoboShop@1
+      login_host: mysql.devsecopstrainee.site
+      state: import
+      target: "{{ item }}"
+    loop:
+    - /app/db/schema.sql
+    - /app/db/app-user.sql
+    - /app/db/master-data.sql
+
+  - name: Restat shipping
+    ansible.builtin.service:
+      name: shipping
+      state: restarted
