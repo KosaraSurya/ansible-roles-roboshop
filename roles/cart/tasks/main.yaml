@@ -1,7 +1,7 @@
     - name: nodejs_setup
-      include_role: 
-        name: common
-        tasks_from: nodejs-setup
+      include_role: #we are calling that playbook by using include role
+      name: common
+      tasks_from: nodejs-setup
 
     - name: app_setup
       include_role:
