@@ -1,0 +1,14 @@
+  - name: copying "{{ component }}" service
+    ansible.builtin.template: # previously it is ansible.builtin.copy but here we are taking it from template so we change to template
+      src: catalogue.service
+      dest: /etc/systemd/system/"{{ component }}".service
+
+  - name:  Taking daemon reload
+    ansible.builtin.systemd_service:
+      daemon_reload:  yes
+
+  - name: start and enabling "{{ component }}"
+    ansible.builtin.service:
+      name: "{{ component }}"
+      state:  restarted #even app is not running we can restart the application
+      enabled:  yes

@@ -1,0 +1,10 @@
+- name: configuration of "{{ component}}"
+  become: yes
+  hosts:
+    "{{ component }}"
+  roles:
+  - "{{ component}}"
+
+  #Here we are giving component as a variabe and we'll pass the value at run time as 
+  #ansible-playbook -i inventory.ini component=mongodb main.yaml 
+  # similarly for all remaining service

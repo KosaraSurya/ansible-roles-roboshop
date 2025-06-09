@@ -1,0 +1,38 @@
+  - name: app_setup
+    include_role:
+      name: common
+      tasks_from: app-setup  
+  
+  - name: nodejs_setup
+    include_role:
+      name: common
+      tasks_from: nodejs-setup
+
+  - name: systemdSetup
+    include_role:
+      name: common
+      tasks_from: systemd-setup
+
+  - name: copying mongoRepo
+    ansible.builtin.copy:
+      src:  mongo.repo
+      dest: /etc/yum.repos.d/mongo.repo
+
+  - name: installing mongodb clinet
+    ansible.builtin.package:
+      name: mongodb-mongosh
+      state: installed
+
+  - name: check whether products loaded or not
+    ansible.builtin.command:  mongosh --host mongodb.devsecopstrainee.site --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
+    register: catalogue_output
+  
+  - name: printing catalogue_output
+    ansible.builtin.debug:
+      msg: "{{ catalogue_output }}"
+
+  - name: load products
+    ansible.builtin.shell: mongosh --host mongodb.devsecopstrainee.site < /app/db/master-data.js
+    when: catalogue_output.stdout | int < 0
+
+    # In linux server the result of stdout will be string, when is unable to compare so we use filter and given integer
