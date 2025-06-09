@@ -1,20 +1,15 @@
-  - name: app_setup
+  - name: app_setup # we created a directory as common, there we wrttien playbook for app-setup.
     include_role:
       name: common
       tasks_from: app-setup  
   
   - name: nodejs_setup
-    include_role:
+    include_role: #we are calling that playbook by using include role
       name: common
       tasks_from: nodejs-setup
 
-  - name: systemdSetup
-    include_role:
-      name: common
-      tasks_from: systemd-setup
-
   - name: copying mongoRepo
-    ansible.builtin.copy:
+    ansible.builtin.copy: #it will take repo file fromthe file directory
       src:  mongo.repo
       dest: /etc/yum.repos.d/mongo.repo
 
@@ -36,3 +31,9 @@
     when: catalogue_output.stdout | int < 0
 
     # In linux server the result of stdout will be string, when is unable to compare so we use filter and given integer
+
+
+  - name: systemdSetup
+    include_role:
+      name: common
+      tasks_from: systemd-setup
