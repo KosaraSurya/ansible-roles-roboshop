@@ -1,7 +1,7 @@
   - name: copying "{{ component }}" service
     ansible.builtin.template: # previously it is ansible.builtin.copy but here we are taking it from template so we change to template
       src: "{{ component}}.service.j2"
-      dest: /etc/systemd/system/{{ component }}.service
+      dest: "/etc/systemd/system/{{ component }}.service"
       #If you give "{{ component }}" then file will save along with "", so that it will not able take restart.
 
   - name:  Taking daemon reload
