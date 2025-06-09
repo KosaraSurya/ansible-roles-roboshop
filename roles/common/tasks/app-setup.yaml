@@ -12,8 +12,10 @@
 
   - name: downloading catalogue service
     ansible.builtin.get_url:
-      url:  https://roboshop-artifacts.s3.amazonaws.com/"{{ component }}"-v3.zip
-      dest: /tmp/"{{ component }}".zip
+      url:  https://roboshop-artifacts.s3.amazonaws.com/{{ component }}-v3.zip
+      dest: /tmp/{{ component }}.zip
+
+      # when we "{{ component }}" we are not able to download the service
 
 
   # this module thinks file exist on ansible control server,But needs to extract on to remote machine so
@@ -21,6 +23,6 @@
 
   - name: extracting the service
     ansible.builtin.unarchive:
-      src:  /tmp/catalogue.zip
+      src:  /tmp/{{ component }}.zip
       dest: /app
       remote_src: yes
