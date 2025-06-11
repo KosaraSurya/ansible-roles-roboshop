@@ -15,9 +15,9 @@
 
 - name: downloading the new code
   ansible.builtin.unarchive: #By using this module we can download and unzip at a time
-  src: "https://roboshop-artifacts.s3.amazonaws.com/{{ component }}-v{{ app_version }}.zip"
-  dest: /app
-  remote_src: yes
+    src: "https://roboshop-artifacts.s3.amazonaws.com/{{ component }}-v{{ app_version }}.zip"
+    dest: /app
+    remote_src: yes
 
 - name: install dependencies
   community.general.npm:
