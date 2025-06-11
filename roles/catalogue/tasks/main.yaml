@@ -37,3 +37,10 @@
     include_role:
       name: common
       tasks_from: systemd-setup
+
+  - name: Deployment
+    tags:
+    - deploment
+    import_role:
+      name: common
+      tasks_from: deploment
