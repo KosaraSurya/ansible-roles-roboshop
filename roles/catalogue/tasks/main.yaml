@@ -38,11 +38,9 @@
       name: common
       tasks_from: systemd-setup
 
-  - name: Deployment
-    tags:
-    - deployment
-    import_role:
-      name: common
-      tasks_from: deployment
-      ignore_errors: true
-      ignore_unreachable: true
+  # - name: Deployment
+  #   tags:
+  #   - deployment
+  #   import_role:
+  #     name: common
+  #     tasks_from: deployment
