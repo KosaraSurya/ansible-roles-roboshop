@@ -1,7 +1,7 @@
 - name: stop the server
   ansible.builtin.service:
     name: "{{ component }}"
-    state: absent
+    state: stopped
 
 - name: removing old code
   ansible.builtin.file:
