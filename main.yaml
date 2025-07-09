@@ -1,8 +1,8 @@
 - name: configuration of "{{ component}}"
   become: yes
-  #hosts: "{{ component }}"
-  hosts: localhost # Here we given local host for roboshop-infra-dev/40-databases/main.tf
-  connection: local # for ansible roles we have to use hosts: "{{ component }}"
+  hosts: "{{ component }}"
+  # hosts: localhost # Here we given local host for roboshop-infra-dev/40-databases/main.tf
+  # connection: local # for ansible roles we have to use hosts: "{{ component }}"
   roles:
   - "{{ component}}"
 
